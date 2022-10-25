@@ -3,28 +3,34 @@ import axios from "axios";
 
 export default function Search() {
   let form = (
-    <div class="row">
-      <div class="col-9">
-        <form id="form-name-of-city" onSubmit={handleSubmit}>
+    <div className="row">
+      <div className="col-9">
+        <form id="form-name-of-city">
           <input
-            type="text"
-            class="form-control"
+            type="search"
+            className="form-control"
             id="nameOfCity"
             placeholder="Enter other city"
-            autocomplete="off"
+            autoComplete="off"
             onChange={updateCity}
           />
         </form>
       </div>
-      <div class="col-1">
-        <button type="submit" class="btn btn-primary buttons" id="buttonSearch">
-          Search
-        </button>
+      <div className="col-1">
+        <form onSubmit={handleSubmit}>
+          <button
+            type="Submit"
+            className="btn btn-primary buttons"
+            id="buttonSearch"
+          >
+            Search
+          </button>
+        </form>
       </div>
-      <div class="col-2">
+      <div className="col-2">
         <button
           type="submit"
-          class="btn btn-primary buttons"
+          className="btn btn-primary buttons"
           id="buttonCurrentLocation"
         >
           Current location
@@ -35,8 +41,56 @@ export default function Search() {
 
   let [city, setCity] = useState("");
   let [weather, setWeather] = useState({});
+  let [loaded, setLoaded] = useState(false);
+
+  let day = null;
+  let month = null;
+  let minute = null;
+
+  function formatDate(timestamp) {
+    let date = new Date(timestamp);
+    if (date.getDate() < 10) {
+      day = `0${date.getDate()}`;
+    } else {
+      day = date.getDate();
+    }
+    if (date.getMonth() + 1 < 10) {
+      month = `0${date.getMonth() + 1}`;
+      console.log(month);
+    } else {
+      month = date.getMonth() + 1;
+      console.log(month);
+    }
+    let year = date.getFullYear();
+    return `${day}.${month}.${year}`;
+  }
+
+  let Days = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
+  function formatDay(timestamp) {
+    let date = new Date(timestamp);
+    return Days[date.getDay()];
+  }
+
+  function formatTime(timestamp) {
+    let date = new Date(timestamp);
+    if (date.getMinutes() < 10) {
+      minute = `0${date.getMinutes()}`;
+    } else {
+      minute = date.getMinutes();
+    }
+    return `${date.getHours()} : ${minute}`;
+  }
 
   function handleResponse(response) {
+    setLoaded(true);
     console.log(response);
     setWeather({
       temperature: response.data.main.temp,
@@ -44,6 +98,9 @@ export default function Search() {
       humidity: response.data.main.humidity,
       icon: `http://openweathermap.org/img/wn/${response.data.weather[0].icon}@2x.png`,
       description: response.data.weather[0].description,
+      fullDate: formatDate(response.data.dt * 1000),
+      weekDays: formatDay(response.data.dt * 1000),
+      time: formatTime(response.data.dt * 1000),
     });
     return;
   }
@@ -58,64 +115,70 @@ export default function Search() {
     axios.get(url).then(handleResponse);
     return;
   }
-
-  return (
-    <div class="container">
-      {form}
-      <div class="row rowAboutOfDay">
-        <div class="col-2">
-          <div class="mainEmoji">
-            <img
-              src="http://openweathermap.org/img/wn/10d@2x.png"
-              alt="icon"
-              id="icon-weather"
-            />
+  if (loaded) {
+    return (
+      <div className="container">
+        {form}
+        <div className="row rowAboutOfDay">
+          <div className="col-2">
+            <div className="mainEmoji">
+              <img src={weather.icon} alt="icon" id="icon-weather" />
+            </div>
+          </div>
+          <div className="col-3">
+            <ul>
+              <li className="aboutOfDay city" id="cityName">
+                {city}
+              </li>
+              <li className="aboutOfDay">
+                <span className="temperature">
+                  <span className="valueOfTemp">
+                    {Math.round(weather.temperature)}
+                  </span>
+                  °
+                </span>
+                <a href="#" className="degreeC">
+                  C |
+                </a>
+                <a href="#" className="degreeF">
+                  F
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div className="col-4">
+            <ul>
+              <li className="aboutOfDay">
+                <span className="description">{weather.description}</span>
+              </li>
+              <li className="aboutOfDay">
+                <strong>Humidity:</strong>{" "}
+                <span className="humidity">{weather.humidity}</span> %
+              </li>
+              <li className="aboutOfDay">
+                <strong>Wind speed:</strong>{" "}
+                <span className="wind">{weather.wind}</span> m/h
+              </li>
+            </ul>
+          </div>
+          <div className="col-3">
+            <ul>
+              <li className="aboutOfDayLine date" id="fullDate">
+                {weather.fullDate}
+              </li>
+              <li className="aboutOfDayLine" id="weekDays">
+                {weather.weekDays}
+              </li>
+              <li className="aboutOfDayLine" id="time">
+                {weather.time}
+              </li>
+            </ul>
           </div>
         </div>
-        <div class="col-3">
-          <ul>
-            <li class="aboutOfDay city" id="cityName">
-              Poland
-            </li>
-            <li class="aboutOfDay">
-              <span class="temperature">
-                <span class="valueOfTemp">{weather}</span>°
-              </span>
-              <a href="#" class="degreeC"></a>
-              <a href="#" class="degreeF">
-                F
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div class="col-4">
-          <ul>
-            <li class="aboutOfDay">
-              <span class="description"> - </span>
-            </li>
-            <li class="aboutOfDay">
-              <strong>Humidity:</strong> <span class="humidity">33</span> %
-            </li>
-            <li class="aboutOfDay">
-              <strong>Wind speed:</strong> <span class="wind">26</span> m/h
-            </li>
-          </ul>
-        </div>
-        <div class="col-3">
-          <ul>
-            <li class="aboutOfDayLine date" id="fullDate">
-              06.03.2022
-            </li>
-            <li class="aboutOfDayLine" id="weekDays">
-              Tuesday
-            </li>
-            <li class="aboutOfDayLine" id="time">
-              14:42
-            </li>
-          </ul>
-        </div>
+        <div id="forecast"></div>
       </div>
-      <div id="forecast"></div>
-    </div>
-  );
+    );
+  } else {
+    return <div className="container">{form}</div>;
+  }
 }
