@@ -1,23 +1,20 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import Search from "./Search.js";
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
+      <Search />
+      <div class="col-9 github-div">
         <a
-          className="App-link"
-          href="https://reactjs.org"
+          href="https://github.com/Ordrwams/shecodes-education.git"
           target="_blank"
-          rel="noopener noreferrer"
+          class="github"
         >
-          Learn React
+          Open-source code
         </a>
-      </header>
+        <small class="name">by Anzhelika Maksimova</small>
+      </div>
     </div>
   );
 }
