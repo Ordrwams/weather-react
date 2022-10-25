@@ -167,7 +167,7 @@ export default function Search() {
                 {weather.fullDate}
               </li>
               <li className="aboutOfDayLine" id="weekDays">
-                {weather.weekDays}
+                {weather.weekDays}.
               </li>
               <li className="aboutOfDayLine" id="time">
                 {weather.time}
