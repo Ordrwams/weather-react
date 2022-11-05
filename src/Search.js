@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import Unit from "./Units";
 
 export default function Search() {
   let form = (
@@ -131,18 +132,7 @@ export default function Search() {
                 {city}
               </li>
               <li className="aboutOfDay">
-                <span className="temperature">
-                  <span className="valueOfTemp">
-                    {Math.round(weather.temperature)}
-                  </span>
-                  °
-                </span>
-                <a href="#" className="degreeC">
-                  C |
-                </a>
-                <a href="#" className="degreeF">
-                  F
-                </a>
+                <Unit celsium={weather.temperature} />
               </li>
             </ul>
           </div>
